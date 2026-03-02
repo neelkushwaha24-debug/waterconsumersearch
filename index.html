@@ -41,7 +41,7 @@
 
     <div id="mainApp" style="display: none;">
         <div class="container">
-            <h2>नगर पालिका - ऑटो-लोड जल उपभोक्ता सर्च</h2>
+            <h2>नगर पालिका - सुरक्षित जल उपभोक्ता सर्च</h2>
             
             <div id="statusMessage" style="background-color: #fcf3cf; color: #b9770e;">डेटा लोड किया जा रहा है, कृपया प्रतीक्षा करें...</div>
 
@@ -57,6 +57,10 @@
                 <div class="search-box">
                     <label>Consumer Name (नाम)</label>
                     <input type="text" id="sName" placeholder="उपभोक्ता का नाम...">
+                </div>
+                <div class="search-box">
+                    <label>Father/Husband Name</label>
+                    <input type="text" id="sFather" placeholder="पिता/पति का नाम...">
                 </div>
                 <div class="search-box">
                     <label>Address (पता)</label>
@@ -83,28 +87,21 @@
         let globalData = [];
         let headers = [];
 
-        // लॉगिन चेक करने का फंक्शन
         function checkLogin() {
             const enteredPass = document.getElementById('passInput').value;
             if (enteredPass === APP_PASSWORD) {
-                // सही पासवर्ड होने पर लॉगिन स्क्रीन छिपाएं और मुख्य ऐप दिखाएं
                 document.getElementById('loginScreen').style.display = "none";
                 document.getElementById('mainApp').style.display = "block";
-                
-                // अब डेटा लोड करना शुरू करें (ताकि स्पीड तेज़ रहे)
                 loadDataFromGoogle();
             } else {
-                // गलत पासवर्ड
                 document.getElementById('loginError').style.display = "block";
             }
         }
 
-        // एंटर बटन दबाने पर भी लॉगिन हो जाए
         document.getElementById("passInput").addEventListener("keypress", function(event) {
             if (event.key === "Enter") { checkLogin(); }
         });
 
-        // Google Sheet से एक ही बार में सारा डेटा मंगाने वाला पुराना तेज़ फंक्शन
         function loadDataFromGoogle() {
             fetch(sheetURL)
                 .then(response => response.json())
@@ -153,11 +150,11 @@
             });
         }
 
-        // तेज़ सर्च (Client-side filtering)
         function filterData() {
             const vWaterId = document.getElementById('sWaterId').value.toLowerCase().trim();
             const vOldWaterId = document.getElementById('sOldWaterId').value.toLowerCase().trim();
             const vName = document.getElementById('sName').value.toLowerCase().trim();
+            const vFather = document.getElementById('sFather').value.toLowerCase().trim(); // पिता का नाम यहाँ जोड़ा गया
             const vAddress = document.getElementById('sAddress').value.toLowerCase().trim();
 
             const filteredData = globalData.filter(row => {
@@ -165,6 +162,7 @@
                 if (vWaterId && !(row[0] && String(row[0]).toLowerCase().includes(vWaterId))) match = false;
                 if (vOldWaterId && (!row[1] || String(row[1]).toLowerCase() !== vOldWaterId)) match = false;
                 if (vName && !(row[2] && String(row[2]).toLowerCase().includes(vName))) match = false;
+                if (vFather && !(row[3] && String(row[3]).toLowerCase().includes(vFather))) match = false; // फिल्टर लॉजिक
                 if (vAddress && !(row[5] && String(row[5]).toLowerCase().includes(vAddress))) match = false;
                 return match;
             });
@@ -173,8 +171,8 @@
             document.getElementById('statusMessage').innerText = `सर्च रिज़ल्ट: ${filteredData.length} रिकॉर्ड मिले।`;
         }
 
-        // टाइप करते ही सर्च शुरू हो जाए
-        ['sWaterId', 'sOldWaterId', 'sName', 'sAddress'].forEach(id => {
+        // सभी 5 इनपुट फील्ड्स में टाइप करते ही सर्च चालू हो जाएगा
+        ['sWaterId', 'sOldWaterId', 'sName', 'sFather', 'sAddress'].forEach(id => {
             document.getElementById(id).addEventListener('input', filterData);
         });
     </script>
