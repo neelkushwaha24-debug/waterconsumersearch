@@ -3,195 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>नगर पालिका - ऑटो-लोड जल उपभोक्ता सर्च</title>
+    <title>नगर पालिका - सुरक्षित जल उपभोक्ता सर्च</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 1300px;
-            margin: auto;
-            background: #ffffff;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        h2 {
-            text-align: center;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #2980b9;
-            padding-bottom: 10px;
-        }
-        .search-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            background: #fdfefe;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #d5dbdb;
-            margin-bottom: 20px;
-        }
-        .search-box {
-            display: flex;
-            flex-direction: column;
-        }
-        .search-box label {
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: #34495e;
-            font-size: 14px;
-        }
-        .search-box input {
-            padding: 10px;
-            border: 1px solid #bdc3c7;
-            border-radius: 5px;
-            font-size: 15px;
-            background-color: #fff;
-        }
-        .search-box input:focus {
-            outline: none;
-            border-color: #2980b9;
-            box-shadow: 0 0 5px rgba(41, 128, 185, 0.3);
-        }
-        #statusMessage {
-            font-weight: bold;
-            color: #b9770e;
-            margin-bottom: 15px;
-            font-size: 15px;
-            text-align: center;
-            padding: 10px;
-            background-color: #fcf3cf;
-            border-radius: 5px;
-        }
-        .table-container {
-            overflow-x: auto;
-            max-height: 550px;
-            border-radius: 5px;
-            border: 1px solid #ecf0f1;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            white-space: nowrap;
-        }
-        th, td {
-            padding: 10px 15px;
-            border: 1px solid #ecf0f1;
-            text-align: left;
-        }
-        th {
-            background-color: #2c3e50;
-            color: white;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tr:hover {
-            background-color: #ebf5fb;
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
+        
+        /* लॉगिन स्क्रीन की डिज़ाइन */
+        #loginScreen { max-width: 400px; margin: 100px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-align: center; }
+        #loginScreen input { width: 90%; padding: 12px; margin: 15px 0; border: 1px solid #bdc3c7; border-radius: 5px; font-size: 16px; text-align: center; }
+        #loginScreen button { width: 100%; padding: 12px; background-color: #2c3e50; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        #loginScreen button:hover { background-color: #1a252f; }
+        #loginError { color: red; font-weight: bold; display: none; margin-top: 10px; }
+
+        /* मुख्य ऐप की डिज़ाइन */
+        .container { max-width: 1300px; margin: auto; background: #ffffff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #2c3e50; margin-bottom: 20px; border-bottom: 2px solid #2980b9; padding-bottom: 10px; }
+        .search-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; background: #fdfefe; padding: 20px; border-radius: 8px; border: 1px solid #d5dbdb; margin-bottom: 20px; }
+        .search-box { display: flex; flex-direction: column; }
+        .search-box label { font-weight: 600; margin-bottom: 5px; color: #34495e; font-size: 14px; }
+        .search-box input { padding: 10px; border: 1px solid #bdc3c7; border-radius: 5px; font-size: 15px; }
+        #statusMessage { font-weight: bold; text-align: center; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
+        .table-container { overflow-x: auto; max-height: 550px; border-radius: 5px; border: 1px solid #ecf0f1; }
+        table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+        th, td { padding: 10px 15px; border: 1px solid #ecf0f1; text-align: left; }
+        th { background-color: #2c3e50; color: white; position: sticky; top: 0; z-index: 1; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h2>नगर पालिका - ऑटो-लोड जल उपभोक्ता सर्च</h2>
-        
-        <div id="statusMessage">Google Sheet से डेटा लोड किया जा रहा है, कृपया प्रतीक्षा करें...</div>
+    <div id="loginScreen">
+        <h2 style="border:none;">कर्मचारी लॉगिन</h2>
+        <p style="color:#7f8c8d;">डेटाबेस एक्सेस करने के लिए पिन डालें</p>
+        <input type="password" id="passInput" placeholder="अपना सीक्रेट पिन डालें">
+        <button onclick="checkLogin()">लॉगिन करें</button>
+        <p id="loginError">❌ गलत पिन, कृपया दोबारा प्रयास करें!</p>
+    </div>
 
-        <div class="search-grid">
-            <div class="search-box">
-                <label>Water ID (न्यू वोटर आईडी)</label>
-                <input type="text" id="sWaterId" placeholder="W-26-..." disabled>
-            </div>
-            <div class="search-box">
-                <label>Old Water ID (एग्जैक्ट मैच)</label>
-                <input type="text" id="sOldWaterId" placeholder="पूरा पुराना आईडी लिखें..." disabled>
-            </div>
-            <div class="search-box">
-                <label>Consumer Name (नाम)</label>
-                <input type="text" id="sName" placeholder="उपभोक्ता का नाम..." disabled>
-            </div>
-            <div class="search-box">
-                <label>Father/Husband Name</label>
-                <input type="text" id="sFather" placeholder="पिता/पति का नाम..." disabled>
-            </div>
-            <div class="search-box">
-                <label>Address (पता)</label>
-                <input type="text" id="sAddress" placeholder="मकान नं., मोहल्ला..." disabled>
-            </div>
-        </div>
+    <div id="mainApp" style="display: none;">
+        <div class="container">
+            <h2>नगर पालिका - ऑटो-लोड जल उपभोक्ता सर्च</h2>
+            
+            <div id="statusMessage" style="background-color: #fcf3cf; color: #b9770e;">डेटा लोड किया जा रहा है, कृपया प्रतीक्षा करें...</div>
 
-        <div class="table-container">
-            <table id="dataTable">
-                <thead>
-                    <tr id="tableHeader"></tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
+            <div class="search-grid">
+                <div class="search-box">
+                    <label>Water ID (न्यू वोटर आईडी)</label>
+                    <input type="text" id="sWaterId" placeholder="W-26-...">
+                </div>
+                <div class="search-box">
+                    <label>Old Water ID (एग्जैक्ट मैच)</label>
+                    <input type="text" id="sOldWaterId" placeholder="पूरा पुराना आईडी लिखें...">
+                </div>
+                <div class="search-box">
+                    <label>Consumer Name (नाम)</label>
+                    <input type="text" id="sName" placeholder="उपभोक्ता का नाम...">
+                </div>
+                <div class="search-box">
+                    <label>Address (पता)</label>
+                    <input type="text" id="sAddress" placeholder="मकान नं., मोहल्ला...">
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="dataTable">
+                    <thead><tr id="tableHeader"></tr></thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <script>
+        // --- 1. यहाँ अपना सुरक्षित पासवर्ड/पिन सेट करें ---
+        const APP_PASSWORD = "Vidishanagar"; 
+
+        // --- 2. अपना Google Web App URL यहाँ डालें ---
+        const sheetURL = "https://script.google.com/macros/s/AKfycbzHh-PCNhDVsTZpVPgBTrK9LkNyXK3aP5XiW_jSkmQiMbSuJWKjHoGEehFXuL0EfZVjQQ/exec"; 
+        
         let globalData = [];
         let headers = [];
 
-        // अपना Google Apps Script वाला Web App URL यहाँ डालें
-        const sheetURL = "https://script.google.com/macros/s/AKfycbzHh-PCNhDVsTZpVPgBTrK9LkNyXK3aP5XiW_jSkmQiMbSuJWKjHoGEehFXuL0EfZVjQQ/exec"; 
+        // लॉगिन चेक करने का फंक्शन
+        function checkLogin() {
+            const enteredPass = document.getElementById('passInput').value;
+            if (enteredPass === APP_PASSWORD) {
+                // सही पासवर्ड होने पर लॉगिन स्क्रीन छिपाएं और मुख्य ऐप दिखाएं
+                document.getElementById('loginScreen').style.display = "none";
+                document.getElementById('mainApp').style.display = "block";
+                
+                // अब डेटा लोड करना शुरू करें (ताकि स्पीड तेज़ रहे)
+                loadDataFromGoogle();
+            } else {
+                // गलत पासवर्ड
+                document.getElementById('loginError').style.display = "block";
+            }
+        }
 
-        const searchInputs = [
-            document.getElementById('sWaterId'),
-            document.getElementById('sOldWaterId'),
-            document.getElementById('sName'),
-            document.getElementById('sFather'),
-            document.getElementById('sAddress')
-        ];
+        // एंटर बटन दबाने पर भी लॉगिन हो जाए
+        document.getElementById("passInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") { checkLogin(); }
+        });
 
-        // पेज लोड होते ही Google Sheet से डेटा मंगाना शुरू करें
-        document.addEventListener("DOMContentLoaded", function() {
+        // Google Sheet से एक ही बार में सारा डेटा मंगाने वाला पुराना तेज़ फंक्शन
+        function loadDataFromGoogle() {
             fetch(sheetURL)
                 .then(response => response.json())
                 .then(data => {
-                    if (!data || data.length === 0) {
-                        showError("Google Sheet में कोई डेटा नहीं मिला।");
-                        return;
-                    }
-
-                    // Google Sheet से आया डेटा पहले से ही Array में होता है
-                    // पहली लाइन को हेडिंग (headers) बना लें
-                    headers = data[0];
+                    if (!data || data.length === 0) return;
                     
-                    // बाकी की लाइनों को डेटा (globalData) बना लें
+                    headers = data[0];
                     globalData = data.slice(1);
 
                     renderHeaders();
                     renderTable(globalData.slice(0, 50));
                     
-                    // डेटा लोड होने के बाद मैसेज हरा कर दें और इनपुट चालू कर दें
                     const statusBox = document.getElementById('statusMessage');
                     statusBox.innerText = `डेटाबेस एक्टिव: सफलतापूर्वक ${globalData.length} रिकॉर्ड लोड हो गए हैं!`;
                     statusBox.style.color = "#196f3d";
                     statusBox.style.backgroundColor = "#d5f5e3";
-
-                    searchInputs.forEach(input => input.disabled = false);
                 })
                 .catch(error => {
-                    showError("डेटा मंगाने में एरर (कृपया लिंक चेक करें): " + error.message);
+                    const statusBox = document.getElementById('statusMessage');
+                    statusBox.innerText = "डेटा मंगाने में एरर: " + error.message;
+                    statusBox.style.color = "red";
                 });
-        });
-
-        function showError(msg) {
-            const statusBox = document.getElementById('statusMessage');
-            statusBox.innerText = msg;
-            statusBox.style.color = "red";
-            statusBox.style.backgroundColor = "#fadbd8";
         }
 
         function renderHeaders() {
@@ -211,7 +146,6 @@
                 const tr = document.createElement('tr');
                 for(let i=0; i < headers.length; i++) {
                     const td = document.createElement('td');
-                    // Google sheet के खाली सेल को संभालने के लिए || '' लगाया है
                     td.innerText = row[i] !== undefined ? row[i] : ''; 
                     tr.appendChild(td);
                 }
@@ -219,38 +153,19 @@
             });
         }
 
+        // तेज़ सर्च (Client-side filtering)
         function filterData() {
             const vWaterId = document.getElementById('sWaterId').value.toLowerCase().trim();
             const vOldWaterId = document.getElementById('sOldWaterId').value.toLowerCase().trim();
             const vName = document.getElementById('sName').value.toLowerCase().trim();
-            const vFather = document.getElementById('sFather').value.toLowerCase().trim();
             const vAddress = document.getElementById('sAddress').value.toLowerCase().trim();
-
-            if (!vWaterId && !vOldWaterId && !vName && !vFather && !vAddress) {
-                renderTable(globalData.slice(0, 50));
-                document.getElementById('statusMessage').innerText = `कुल रिकॉर्ड: ${globalData.length} (शुरुआती 50 दिख रहे हैं)`;
-                return;
-            }
 
             const filteredData = globalData.filter(row => {
                 let match = true;
-                
-                // ध्यान दें: ये नंबर (0,1,2,3,5) आपकी Google Sheet के कॉलम के हिसाब से होने चाहिए
-                // 0: पहला कॉलम, 1: दूसरा कॉलम, आदि
-                
                 if (vWaterId && !(row[0] && String(row[0]).toLowerCase().includes(vWaterId))) match = false;
-                
-                // --- Old Water ID एग्जैक्ट मैच (Exact Match) ---
-                if (vOldWaterId) {
-                    if (!row[1] || String(row[1]).toLowerCase() !== vOldWaterId) {
-                        match = false;
-                    }
-                }
-                
+                if (vOldWaterId && (!row[1] || String(row[1]).toLowerCase() !== vOldWaterId)) match = false;
                 if (vName && !(row[2] && String(row[2]).toLowerCase().includes(vName))) match = false;
-                if (vFather && !(row[3] && String(row[3]).toLowerCase().includes(vFather))) match = false;
                 if (vAddress && !(row[5] && String(row[5]).toLowerCase().includes(vAddress))) match = false;
-
                 return match;
             });
 
@@ -258,8 +173,9 @@
             document.getElementById('statusMessage').innerText = `सर्च रिज़ल्ट: ${filteredData.length} रिकॉर्ड मिले।`;
         }
 
-        searchInputs.forEach(input => {
-            input.addEventListener('input', filterData);
+        // टाइप करते ही सर्च शुरू हो जाए
+        ['sWaterId', 'sOldWaterId', 'sName', 'sAddress'].forEach(id => {
+            document.getElementById(id).addEventListener('input', filterData);
         });
     </script>
 </body>
