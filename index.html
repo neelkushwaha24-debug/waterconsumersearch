@@ -78,7 +78,7 @@
     </div>
 
     <script>
-        // --- 1. यहाँ अपना सुरक्षित पासवर्ड/पिन सेट करें ---
+        // --- 1. अपना पिन यहाँ सेट करें ---
         const APP_PASSWORD = "Vidishanagar"; 
 
         // --- 2. अपना Google Web App URL यहाँ डालें ---
@@ -154,7 +154,7 @@
             const vWaterId = document.getElementById('sWaterId').value.toLowerCase().trim();
             const vOldWaterId = document.getElementById('sOldWaterId').value.toLowerCase().trim();
             const vName = document.getElementById('sName').value.toLowerCase().trim();
-            const vFather = document.getElementById('sFather').value.toLowerCase().trim(); // पिता का नाम यहाँ जोड़ा गया
+            const vFather = document.getElementById('sFather').value.toLowerCase().trim();
             const vAddress = document.getElementById('sAddress').value.toLowerCase().trim();
 
             const filteredData = globalData.filter(row => {
@@ -162,7 +162,8 @@
                 if (vWaterId && !(row[0] && String(row[0]).toLowerCase().includes(vWaterId))) match = false;
                 if (vOldWaterId && (!row[1] || String(row[1]).toLowerCase() !== vOldWaterId)) match = false;
                 if (vName && !(row[2] && String(row[2]).toLowerCase().includes(vName))) match = false;
-                if (vFather && !(row[3] && String(row[3]).toLowerCase().includes(vFather))) match = false; // फिल्टर लॉजिक
+                // पिता के नाम का फ़िल्टर भी यहाँ मौजूद है
+                if (vFather && !(row[3] && String(row[3]).toLowerCase().includes(vFather))) match = false;
                 if (vAddress && !(row[5] && String(row[5]).toLowerCase().includes(vAddress))) match = false;
                 return match;
             });
@@ -171,7 +172,7 @@
             document.getElementById('statusMessage').innerText = `सर्च रिज़ल्ट: ${filteredData.length} रिकॉर्ड मिले।`;
         }
 
-        // सभी 5 इनपुट फील्ड्स में टाइप करते ही सर्च चालू हो जाएगा
+        // सभी 5 सर्च बॉक्स एक साथ काम करेंगे
         ['sWaterId', 'sOldWaterId', 'sName', 'sFather', 'sAddress'].forEach(id => {
             document.getElementById(id).addEventListener('input', filterData);
         });
