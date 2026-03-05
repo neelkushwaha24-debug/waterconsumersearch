@@ -22,11 +22,19 @@
         .search-box label { font-weight: 600; margin-bottom: 5px; color: #34495e; font-size: 14px; }
         .search-box input { padding: 10px; border: 1px solid #bdc3c7; border-radius: 5px; font-size: 15px; }
         #statusMessage { font-weight: bold; text-align: center; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
+        
         .table-container { overflow-x: auto; max-height: 550px; border-radius: 5px; border: 1px solid #ecf0f1; }
         table { width: 100%; border-collapse: collapse; white-space: nowrap; }
         th, td { padding: 10px 15px; border: 1px solid #ecf0f1; text-align: left; }
         th { background-color: #2c3e50; color: white; position: sticky; top: 0; z-index: 1; }
         tr:nth-child(even) { background-color: #f9f9f9; }
+
+        /* पेजिनेशन (Next/Prev) बटन की डिज़ाइन */
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; }
+        .pagination button { padding: 10px 20px; background-color: #2980b9; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.3s; }
+        .pagination button:hover:not(:disabled) { background-color: #1abc9c; }
+        .pagination button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+        .pagination span { font-weight: bold; color: #2c3e50; font-size: 16px; }
     </style>
 </head>
 <body>
@@ -74,18 +82,29 @@
                     <tbody id="tableBody"></tbody>
                 </table>
             </div>
+
+            <div class="pagination" id="paginationControls" style="display: none;">
+                <button id="prevBtn" onclick="prevPage()">⬅ पिछला पेज</button>
+                <span id="pageInfo">पेज 1</span>
+                <button id="nextBtn" onclick="nextPage()">अगला पेज ➡</button>
+            </div>
         </div>
     </div>
 
     <script>
         // --- 1. अपना पिन यहाँ सेट करें ---
-        const APP_PASSWORD = "Vidishanagar"; 
+        const APP_PASSWORD = "nagar"; 
 
         // --- 2. अपना Google Web App URL यहाँ डालें ---
         const sheetURL = "https://script.google.com/macros/s/AKfycbzHh-PCNhDVsTZpVPgBTrK9LkNyXK3aP5XiW_jSkmQiMbSuJWKjHoGEehFXuL0EfZVjQQ/exec"; 
         
         let globalData = [];
         let headers = [];
+        
+        // पेजिनेशन के लिए नए वेरिएबल्स
+        let currentFilteredData = [];
+        let currentPage = 1;
+        const rowsPerPage = 200; // एक बार में 200 रिकॉर्ड दिखेंगे
 
         function checkLogin() {
             const enteredPass = document.getElementById('passInput').value;
@@ -110,9 +129,12 @@
                     
                     headers = data[0];
                     globalData = data.slice(1);
+                    currentFilteredData = globalData; // शुरुआत में सारा डेटा
 
                     renderHeaders();
-                    renderTable(globalData.slice(0, 50));
+                    
+                    // पेज डिस्प्ले का फंक्शन कॉल करें
+                    displayTablePage();
                     
                     const statusBox = document.getElementById('statusMessage');
                     statusBox.innerText = `डेटाबेस एक्टिव: सफलतापूर्वक ${globalData.length} रिकॉर्ड लोड हो गए हैं!`;
@@ -150,6 +172,47 @@
             });
         }
 
+        // नया फ़ंक्शन: जो पेजिनेशन को हैंडल करेगा
+        function displayTablePage() {
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            
+            // 200 रिकॉर्ड्स का हिस्सा निकालें
+            const pageData = currentFilteredData.slice(start, end);
+            renderTable(pageData);
+
+            // पेजिनेशन बटन को अपडेट करें
+            document.getElementById('paginationControls').style.display = "flex";
+            document.getElementById('pageInfo').innerText = `पेज ${currentPage}`;
+            
+            // अगर पहले पेज पर हैं, तो 'पिछला' बटन बंद कर दें
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            
+            // अगर आगे कोई डेटा नहीं है, तो 'अगला' बटन बंद कर दें
+            document.getElementById('nextBtn').disabled = end >= currentFilteredData.length;
+
+            // ऊपर का मैसेज अपडेट करें
+            let showingEnd = end > currentFilteredData.length ? currentFilteredData.length : end;
+            let showingStart = currentFilteredData.length === 0 ? 0 : start + 1;
+            document.getElementById('statusMessage').innerText = `सर्च रिज़ल्ट: कुल ${currentFilteredData.length} रिकॉर्ड मिले (दिखा रहे हैं ${showingStart} से ${showingEnd})।`;
+        }
+
+        // 'अगला पेज' का फंक्शन
+        function nextPage() {
+            if (currentPage * rowsPerPage < currentFilteredData.length) {
+                currentPage++;
+                displayTablePage();
+            }
+        }
+
+        // 'पिछला पेज' का फंक्शन
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                displayTablePage();
+            }
+        }
+
         function filterData() {
             const vWaterId = document.getElementById('sWaterId').value.toLowerCase().trim();
             const vOldWaterId = document.getElementById('sOldWaterId').value.toLowerCase().trim();
@@ -157,19 +220,19 @@
             const vFather = document.getElementById('sFather').value.toLowerCase().trim();
             const vAddress = document.getElementById('sAddress').value.toLowerCase().trim();
 
-            const filteredData = globalData.filter(row => {
+            currentFilteredData = globalData.filter(row => {
                 let match = true;
                 if (vWaterId && !(row[0] && String(row[0]).toLowerCase().includes(vWaterId))) match = false;
                 if (vOldWaterId && (!row[1] || String(row[1]).toLowerCase() !== vOldWaterId)) match = false;
                 if (vName && !(row[2] && String(row[2]).toLowerCase().includes(vName))) match = false;
-                // पिता के नाम का फ़िल्टर भी यहाँ मौजूद है
                 if (vFather && !(row[3] && String(row[3]).toLowerCase().includes(vFather))) match = false;
                 if (vAddress && !(row[5] && String(row[5]).toLowerCase().includes(vAddress))) match = false;
                 return match;
             });
 
-            renderTable(filteredData.slice(0, 200)); 
-            document.getElementById('statusMessage').innerText = `सर्च रिज़ल्ट: ${filteredData.length} रिकॉर्ड मिले।`;
+            // सर्च करने पर हमेशा पेज 1 से दिखाना शुरू करें
+            currentPage = 1;
+            displayTablePage();
         }
 
         // सभी 5 सर्च बॉक्स एक साथ काम करेंगे
