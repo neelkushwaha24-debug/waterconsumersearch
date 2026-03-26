@@ -32,15 +32,18 @@
         .reset-btn-container { text-align: center; margin-bottom: 20px; }
         .reset-btn { padding: 10px 25px; background-color: #e74c3c; color: white; border: none; border-radius: 5px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .reset-btn:hover { background-color: #c0392b; }
-        .table-container { overflow-x: auto; max-height: 550px; border-radius: 5px; border: 1px solid #ecf0f1; }
+        
+        /* यहाँ बदलाव किया गया है: max-height: 550px को 75vh किया गया है ताकि यह मोबाइल में नीचे तक फुल स्क्रीन ले सके */
+        .table-container { overflow-x: auto; max-height: 75vh; border-radius: 5px; border: 1px solid #ecf0f1; }
+        
         .search-table { width: 100%; border-collapse: collapse; white-space: nowrap; }
         .search-table th, .search-table td { padding: 10px 15px; border: 1px solid #ecf0f1; text-align: left; }
         .search-table th { background-color: #2c3e50; color: white; position: sticky; top: 0; z-index: 1; }
         .search-table tr:nth-child(even) { background-color: #f9f9f9; }
         
-        /* नया सीक्रेट/हिडन बिल बटन */
+        /* सीक्रेट/हिडन बिल बटन */
         .bill-btn { background-color: transparent; color: #bdc3c7; border: none; padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; outline: none; }
-        .bill-btn:hover { color: #2980b9; } /* आपके लिए माउस ले जाने पर हल्का नीला होगा */
+        .bill-btn:hover { color: #2980b9; } 
 
         .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; }
         .pagination button { padding: 10px 20px; background-color: #2980b9; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.3s; }
@@ -338,7 +341,7 @@
                 headerRow.appendChild(th);
             });
             const actionTh = document.createElement('th');
-            actionTh.innerText = ""; // हेडर का नाम हटा दिया गया है
+            actionTh.innerText = ""; 
             headerRow.appendChild(actionTh);
         }
 
@@ -356,7 +359,7 @@
                 const actionTd = document.createElement('td');
                 const btn = document.createElement('button');
                 btn.className = 'bill-btn';
-                btn.innerText = "»"; // बड़ा बटन हटाकर सिर्फ एक छोटा सा एरो (Arrow) लगा दिया है
+                btn.innerText = "»"; 
                 
                 btn.onclick = function() {
                     openCalculator(row[2], row[0], row[1], row[3], row[5], row[4]); 
