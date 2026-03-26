@@ -18,8 +18,13 @@
         #loginScreen button:hover { background-color: #1a252f; }
         #loginError { color: red; font-weight: bold; display: none; margin-top: 10px; }
 
-        /* सर्च ऐप की डिज़ाइन (बॉक्स एक लाइन में फिक्स किए गए) */
-        .search-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; background: #fdfefe; padding: 20px; border-radius: 8px; border: 1px solid #d5dbdb; margin-bottom: 15px; }
+        /* स्मार्ट सर्च ऐप की डिज़ाइन */
+        .search-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; background: #fdfefe; padding: 20px; border-radius: 8px; border: 1px solid #d5dbdb; margin-bottom: 15px; }
+        
+        @media (min-width: 1024px) {
+            .search-grid { grid-template-columns: repeat(5, 1fr); }
+        }
+
         .search-box { display: flex; flex-direction: column; }
         .search-box label { font-weight: 600; margin-bottom: 5px; color: #34495e; font-size: 14px; }
         .search-box input { padding: 10px; border: 1px solid #bdc3c7; border-radius: 5px; font-size: 15px; width: 100%; box-sizing: border-box; }
@@ -32,12 +37,16 @@
         .search-table th, .search-table td { padding: 10px 15px; border: 1px solid #ecf0f1; text-align: left; }
         .search-table th { background-color: #2c3e50; color: white; position: sticky; top: 0; z-index: 1; }
         .search-table tr:nth-child(even) { background-color: #f9f9f9; }
-        .bill-btn { background-color: #27ae60; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .bill-btn:hover { background-color: #219150; }
+        
+        /* नया सीक्रेट/हिडन बिल बटन */
+        .bill-btn { background-color: transparent; color: #bdc3c7; border: none; padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; outline: none; }
+        .bill-btn:hover { color: #2980b9; } /* आपके लिए माउस ले जाने पर हल्का नीला होगा */
+
         .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; }
         .pagination button { padding: 10px 20px; background-color: #2980b9; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.3s; }
         .pagination button:hover:not(:disabled) { background-color: #1abc9c; }
         .pagination button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+        .pagination span { font-weight: bold; color: #2c3e50; font-size: 16px; }
         
         /* कैलकुलेटर की डिज़ाइन */
         .input-group { display: flex; justify-content: space-between; margin-bottom: 15px; flex-wrap: wrap; gap: 15px; }
@@ -74,15 +83,16 @@
         .highlight-amount { font-size: 18px; font-weight: bold; color: #d9534f; }
         .highlight-discount { font-size: 18px; font-weight: bold; color: #28a745; }
         
-        /* प्रिंट के लिए नया और विस्तृत कंज्यूमर बॉक्स */
-        .consumer-display-box { background-color: #fff; border: 2px solid #333; padding: 15px; margin-bottom: 20px; border-radius: 4px; font-size: 15px; color: #333; }
-        .print-row { display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px dashed #ccc; padding-bottom: 5px; }
-        .print-row:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
-        .print-label { font-weight: normal; color: #555; }
-        .print-value { font-weight: bold; color: #000; } /* प्रिंट में नीला रंग हल्का आता है, इसलिए इसे काला (Black) और बोल्ड रखा है */
+        /* नया प्रोफेशनल बिल डिज़ाइन */
+        .consumer-display-box { background-color: #fff; border: 2px solid #2c3e50; margin-bottom: 20px; border-radius: 6px; overflow: hidden; }
+        .bill-header { background-color: #2c3e50; color: white; padding: 10px 15px; font-size: 16px; font-weight: bold; text-align: center; border-bottom: 2px solid #2c3e50; }
+        .print-row { display: flex; justify-content: space-between; margin: 12px 15px; border-bottom: 1px dashed #ccc; padding-bottom: 8px; flex-wrap: wrap; gap: 10px;}
+        .print-row:last-child { border-bottom: none; margin-bottom: 15px; padding-bottom: 0; }
+        .print-label { font-weight: normal; color: #555; font-size: 14px; }
+        .print-value { font-weight: bold; color: #000; font-size: 15px; }
 
         @media print { 
-            body { background-color: #fff; padding: 0; } 
+            body { background-color: #fff; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; } 
             .container, .calc-container { box-shadow: none; padding: 0; max-width: 100%; margin: 0;} 
             .no-print { display: none !important; } 
             #searchApp { display: none !important; } 
@@ -212,6 +222,7 @@
             </div>
 
             <div id="printConsumerDetails" class="consumer-display-box" style="display: none;">
+                <div class="bill-header">उपभोक्ता विवरण (Consumer Details)</div>
                 <div class="print-row">
                     <div><span class="print-label">नाम: </span><span id="dispName" class="print-value">-</span></div>
                     <div><span class="print-label">पिता/पति: </span><span id="dispFather" class="print-value">-</span></div>
@@ -327,7 +338,7 @@
                 headerRow.appendChild(th);
             });
             const actionTh = document.createElement('th');
-            actionTh.innerText = "एक्शन (बिल बनाएं)";
+            actionTh.innerText = ""; // हेडर का नाम हटा दिया गया है
             headerRow.appendChild(actionTh);
         }
 
@@ -345,10 +356,8 @@
                 const actionTd = document.createElement('td');
                 const btn = document.createElement('button');
                 btn.className = 'bill-btn';
-                btn.innerText = "🧾 बिल बनाएं";
+                btn.innerText = "»"; // बड़ा बटन हटाकर सिर्फ एक छोटा सा एरो (Arrow) लगा दिया है
                 
-                // अब हम सारी जानकारी (Name, New ID, Old ID, Father, Address, Ward) कैलकुलेटर को भेज रहे हैं
-                // मान रहे हैं: row[0]=Water ID, row[1]=Old Water ID, row[2]=Name, row[3]=Father, row[4]=Ward, row[5]=Address
                 btn.onclick = function() {
                     openCalculator(row[2], row[0], row[1], row[3], row[5], row[4]); 
                 };
@@ -424,13 +433,12 @@
         });
 
         // ==========================================
-        // दोनों को जोड़ने वाले फंक्शन (Bridge Functions)
+        // दोनों को जोड़ने वाले फंक्शन
         // ==========================================
         function openCalculator(cName, cConn, cOldConn, cFather, cAddress, cWard) {
             document.getElementById('searchApp').style.display = 'none';
             document.getElementById('calculatorApp').style.display = 'block';
             
-            // सर्च टेबल का पूरा डेटा इनपुट बॉक्स में भरें
             document.getElementById('consumerName').value = cName || '';
             document.getElementById('connectionNo').value = cConn || '';
             document.getElementById('oldConnectionNo').value = cOldConn || '';
@@ -496,7 +504,6 @@
 
             const printConsumerDetails = document.getElementById('printConsumerDetails');
 
-            // सारी जानकारी प्रिंट वाले बॉक्स में अपडेट करें
             if (cName || cWard || cConn || cOldConn || cFather || cAddr) {
                 printConsumerDetails.style.display = 'block';
                 document.getElementById('dispName').innerText = cName || '-';
