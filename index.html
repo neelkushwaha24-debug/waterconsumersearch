@@ -18,11 +18,11 @@
         #loginScreen button:hover { background-color: #1a252f; }
         #loginError { color: red; font-weight: bold; display: none; margin-top: 10px; }
 
-        /* सर्च ऐप की डिज़ाइन */
-        .search-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; background: #fdfefe; padding: 20px; border-radius: 8px; border: 1px solid #d5dbdb; margin-bottom: 15px; }
+        /* सर्च ऐप की डिज़ाइन (बॉक्स एक लाइन में फिक्स किए गए) */
+        .search-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; background: #fdfefe; padding: 20px; border-radius: 8px; border: 1px solid #d5dbdb; margin-bottom: 15px; }
         .search-box { display: flex; flex-direction: column; }
         .search-box label { font-weight: 600; margin-bottom: 5px; color: #34495e; font-size: 14px; }
-        .search-box input { padding: 10px; border: 1px solid #bdc3c7; border-radius: 5px; font-size: 15px; }
+        .search-box input { padding: 10px; border: 1px solid #bdc3c7; border-radius: 5px; font-size: 15px; width: 100%; box-sizing: border-box; }
         #statusMessage { font-weight: bold; text-align: center; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
         .reset-btn-container { text-align: center; margin-bottom: 20px; }
         .reset-btn { padding: 10px 25px; background-color: #e74c3c; color: white; border: none; border-radius: 5px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.3s; }
@@ -41,9 +41,9 @@
         
         /* कैलकुलेटर की डिज़ाइन */
         .input-group { display: flex; justify-content: space-between; margin-bottom: 15px; flex-wrap: wrap; gap: 15px; }
-        .input-box-calc { display: flex; flex-direction: column; flex: 1; min-width: 200px; }
-        label.input-label { font-weight: bold; margin-bottom: 5px; color: #555; }
-        .input-box-calc input { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
+        .input-box-calc { display: flex; flex-direction: column; flex: 1; min-width: 150px; }
+        label.input-label { font-weight: bold; margin-bottom: 5px; color: #555; font-size: 14px; }
+        .input-box-calc input { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; }
         .checkbox-group { display: flex; align-items: center; background-color: #fff3cd; padding: 12px; border-radius: 4px; border: 1px solid #ffeeba; margin-bottom: 20px; cursor: pointer; transition: background 0.3s; }
         .checkbox-group:hover { background-color: #ffe8a1; }
         .checkbox-group input { width: 20px; height: 20px; margin-right: 10px; cursor: pointer; }
@@ -73,13 +73,19 @@
         .remark-box { margin-top: 25px; padding: 15px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-left: 6px solid #28a745; border-radius: 6px; font-size: 16px; color: #2c3e50; box-shadow: 0 2px 6px rgba(0,0,0,0.08); line-height: 1.6; }
         .highlight-amount { font-size: 18px; font-weight: bold; color: #d9534f; }
         .highlight-discount { font-size: 18px; font-weight: bold; color: #28a745; }
-        .consumer-display-box { display: flex; justify-content: space-between; background-color: #fff; border: 2px solid #333; padding: 10px 15px; margin-bottom: 20px; border-radius: 4px; font-weight: bold; font-size: 16px; }
+        
+        /* प्रिंट के लिए नया और विस्तृत कंज्यूमर बॉक्स */
+        .consumer-display-box { background-color: #fff; border: 2px solid #333; padding: 15px; margin-bottom: 20px; border-radius: 4px; font-size: 15px; color: #333; }
+        .print-row { display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px dashed #ccc; padding-bottom: 5px; }
+        .print-row:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
+        .print-label { font-weight: normal; color: #555; }
+        .print-value { font-weight: bold; color: #000; } /* प्रिंट में नीला रंग हल्का आता है, इसलिए इसे काला (Black) और बोल्ड रखा है */
 
         @media print { 
             body { background-color: #fff; padding: 0; } 
             .container, .calc-container { box-shadow: none; padding: 0; max-width: 100%; margin: 0;} 
             .no-print { display: none !important; } 
-            #searchApp { display: none !important; } /* प्रिंट करते समय सर्च न दिखे */
+            #searchApp { display: none !important; } 
         }
     </style>
 </head>
@@ -101,24 +107,24 @@
 
             <div class="search-grid">
                 <div class="search-box">
-                    <label>Water ID (न्यू वोटर आईडी)</label>
-                    <input type="text" id="sWaterId" placeholder="W-26-...">
+                    <label>Water ID</label>
+                    <input type="text" id="sWaterId" placeholder="न्यू वोटर आईडी">
                 </div>
                 <div class="search-box">
-                    <label>Old Water ID (एग्जैक्ट मैच)</label>
-                    <input type="text" id="sOldWaterId" placeholder="पूरा पुराना आईडी लिखें...">
+                    <label>Old Water ID</label>
+                    <input type="text" id="sOldWaterId" placeholder="एग्जैक्ट मैच">
                 </div>
                 <div class="search-box">
-                    <label>Consumer Name (नाम)</label>
-                    <input type="text" id="sName" placeholder="उपभोक्ता का नाम...">
+                    <label>Consumer Name</label>
+                    <input type="text" id="sName" placeholder="नाम">
                 </div>
                 <div class="search-box">
-                    <label>Father/Husband Name</label>
-                    <input type="text" id="sFather" placeholder="पिता/पति का नाम...">
+                    <label>Father/Husband</label>
+                    <input type="text" id="sFather" placeholder="पिता/पति">
                 </div>
                 <div class="search-box">
-                    <label>Address (पता)</label>
-                    <input type="text" id="sAddress" placeholder="मकान नं., मोहल्ला...">
+                    <label>Address</label>
+                    <input type="text" id="sAddress" placeholder="पता">
                 </div>
             </div>
 
@@ -150,15 +156,33 @@
             <div class="input-group no-print">
                 <div class="input-box-calc">
                     <label class="input-label" for="consumerName">उपभोक्ता का नाम:</label>
-                    <input type="text" id="consumerName" placeholder="नाम दर्ज करें">
+                    <input type="text" id="consumerName">
+                </div>
+                <div class="input-box-calc">
+                    <label class="input-label" for="fatherName">पिता/पति का नाम:</label>
+                    <input type="text" id="fatherName">
+                </div>
+            </div>
+            
+            <div class="input-group no-print">
+                <div class="input-box-calc">
+                    <label class="input-label" for="connectionNo">न्यू वाटर आईडी:</label>
+                    <input type="text" id="connectionNo">
+                </div>
+                <div class="input-box-calc">
+                    <label class="input-label" for="oldConnectionNo">ओल्ड वाटर आईडी:</label>
+                    <input type="text" id="oldConnectionNo">
                 </div>
                 <div class="input-box-calc">
                     <label class="input-label" for="wardNo">वार्ड नंबर:</label>
-                    <input type="text" id="wardNo" placeholder="वार्ड क्र.">
+                    <input type="text" id="wardNo">
                 </div>
+            </div>
+            
+            <div class="input-group no-print">
                 <div class="input-box-calc">
-                    <label class="input-label" for="connectionNo">कनेक्शन नंबर:</label>
-                    <input type="text" id="connectionNo" placeholder="कनेक्शन क्र.">
+                    <label class="input-label" for="address">पता:</label>
+                    <input type="text" id="address">
                 </div>
             </div>
 
@@ -188,9 +212,18 @@
             </div>
 
             <div id="printConsumerDetails" class="consumer-display-box" style="display: none;">
-                <div><span>नाम: </span><span id="dispName" style="color:#007bff;">-</span></div>
-                <div><span>वार्ड क्र.: </span><span id="dispWard" style="color:#007bff;">-</span></div>
-                <div><span>कनेक्शन क्र.: </span><span id="dispConn" style="color:#007bff;">-</span></div>
+                <div class="print-row">
+                    <div><span class="print-label">नाम: </span><span id="dispName" class="print-value">-</span></div>
+                    <div><span class="print-label">पिता/पति: </span><span id="dispFather" class="print-value">-</span></div>
+                </div>
+                <div class="print-row">
+                    <div><span class="print-label">न्यू वाटर आईडी: </span><span id="dispConn" class="print-value">-</span></div>
+                    <div><span class="print-label">ओल्ड वाटर आईडी: </span><span id="dispOldConn" class="print-value">-</span></div>
+                    <div><span class="print-label">वार्ड क्र.: </span><span id="dispWard" class="print-value">-</span></div>
+                </div>
+                <div class="print-row">
+                    <div><span class="print-label">पता: </span><span id="dispAddress" class="print-value">-</span></div>
+                </div>
             </div>
 
             <table class="calc-table">
@@ -236,7 +269,7 @@
 
     <script>
         // ==========================================
-        // सर्च ऐप की स्क्रिप्ट (Search App Scripts)
+        // सर्च ऐप की स्क्रिप्ट 
         // ==========================================
         const APP_PASSWORD = "nagar"; 
         const sheetURL = "https://script.google.com/macros/s/AKfycbzHh-PCNhDVsTZpVPgBTrK9LkNyXK3aP5XiW_jSkmQiMbSuJWKjHoGEehFXuL0EfZVjQQ/exec"; 
@@ -309,14 +342,15 @@
                     tr.appendChild(td);
                 }
                 
-                // बिल बनाने का बटन
                 const actionTd = document.createElement('td');
                 const btn = document.createElement('button');
                 btn.className = 'bill-btn';
                 btn.innerText = "🧾 बिल बनाएं";
                 
+                // अब हम सारी जानकारी (Name, New ID, Old ID, Father, Address, Ward) कैलकुलेटर को भेज रहे हैं
+                // मान रहे हैं: row[0]=Water ID, row[1]=Old Water ID, row[2]=Name, row[3]=Father, row[4]=Ward, row[5]=Address
                 btn.onclick = function() {
-                    openCalculator(row[2] || '', row[0] || ''); 
+                    openCalculator(row[2], row[0], row[1], row[3], row[5], row[4]); 
                 };
                 
                 actionTd.appendChild(btn);
@@ -392,32 +426,30 @@
         // ==========================================
         // दोनों को जोड़ने वाले फंक्शन (Bridge Functions)
         // ==========================================
-        function openCalculator(cName, cConn) {
-            // सर्च स्क्रीन छिपाएं और कैलकुलेटर दिखाएं
+        function openCalculator(cName, cConn, cOldConn, cFather, cAddress, cWard) {
             document.getElementById('searchApp').style.display = 'none';
             document.getElementById('calculatorApp').style.display = 'block';
             
-            // डेटा भरें
-            document.getElementById('consumerName').value = cName;
-            document.getElementById('connectionNo').value = cConn;
-            document.getElementById('wardNo').value = ''; // वार्ड खाली करें
+            // सर्च टेबल का पूरा डेटा इनपुट बॉक्स में भरें
+            document.getElementById('consumerName').value = cName || '';
+            document.getElementById('connectionNo').value = cConn || '';
+            document.getElementById('oldConnectionNo').value = cOldConn || '';
+            document.getElementById('fatherName').value = cFather || '';
+            document.getElementById('address').value = cAddress || '';
+            document.getElementById('wardNo').value = cWard || '';
             
-            // तुरंत बिल कैलकुलेट करें
             calculateBill();
-            
-            // पेज के टॉप पर स्क्रॉल करें
             window.scrollTo(0, 0);
         }
 
         function goBackToSearch() {
-            // कैलकुलेटर छिपाएं और सर्च वापस दिखाएं
             document.getElementById('calculatorApp').style.display = 'none';
             document.getElementById('searchApp').style.display = 'block';
             window.scrollTo(0, 0);
         }
 
         // ==========================================
-        // कैलकुलेटर ऐप की स्क्रिप्ट (Calculator Scripts)
+        // कैलकुलेटर ऐप की स्क्रिप्ट 
         // ==========================================
         const rateSlabs = [
             { rate: 9.25, start: new Date('1980-01-01'), end: new Date('1996-03-31') },
@@ -458,13 +490,21 @@
             const cName = document.getElementById('consumerName').value.trim();
             const cWard = document.getElementById('wardNo').value.trim();
             const cConn = document.getElementById('connectionNo').value.trim();
+            const cOldConn = document.getElementById('oldConnectionNo').value.trim();
+            const cFather = document.getElementById('fatherName').value.trim();
+            const cAddr = document.getElementById('address').value.trim();
+
             const printConsumerDetails = document.getElementById('printConsumerDetails');
 
-            if (cName || cWard || cConn) {
-                printConsumerDetails.style.display = 'flex';
+            // सारी जानकारी प्रिंट वाले बॉक्स में अपडेट करें
+            if (cName || cWard || cConn || cOldConn || cFather || cAddr) {
+                printConsumerDetails.style.display = 'block';
                 document.getElementById('dispName').innerText = cName || '-';
                 document.getElementById('dispWard').innerText = cWard || '-';
                 document.getElementById('dispConn').innerText = cConn || '-';
+                document.getElementById('dispOldConn').innerText = cOldConn || '-';
+                document.getElementById('dispFather').innerText = cFather || '-';
+                document.getElementById('dispAddress').innerText = cAddr || '-';
             } else {
                 printConsumerDetails.style.display = 'none';
             }
@@ -619,7 +659,6 @@
             }
         }
 
-        // पेज लोड होते ही डिफ़ॉल्ट एंड डेट सेट करना
         window.onload = function() {
             const today = new Date();
             const lastDayOfPrevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
