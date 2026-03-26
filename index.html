@@ -3,43 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>नगर पालिका - सुरक्षित जल उपभोक्ता सर्च</title>
+    <title>नगर पालिका - वाटर बिलिंग और सर्च सिस्टम</title>
     <style>
+        /* सामान्य डिज़ाइन */
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
+        .container { max-width: 1300px; margin: auto; background: #ffffff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .calc-container { max-width: 800px; margin: 0 auto; background: #fff; padding: 20px 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); position: relative; }
+        h2 { text-align: center; color: #333; margin-bottom: 20px; }
         
-        /* लॉगिन स्क्रीन की डिज़ाइन */
+        /* लॉगिन स्क्रीन */
         #loginScreen { max-width: 400px; margin: 100px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-align: center; }
         #loginScreen input { width: 90%; padding: 12px; margin: 15px 0; border: 1px solid #bdc3c7; border-radius: 5px; font-size: 16px; text-align: center; }
         #loginScreen button { width: 100%; padding: 12px; background-color: #2c3e50; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; }
         #loginScreen button:hover { background-color: #1a252f; }
         #loginError { color: red; font-weight: bold; display: none; margin-top: 10px; }
 
-        /* मुख्य ऐप की डिज़ाइन */
-        .container { max-width: 1300px; margin: auto; background: #ffffff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #2c3e50; margin-bottom: 20px; border-bottom: 2px solid #2980b9; padding-bottom: 10px; }
+        /* सर्च ऐप की डिज़ाइन */
         .search-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; background: #fdfefe; padding: 20px; border-radius: 8px; border: 1px solid #d5dbdb; margin-bottom: 15px; }
         .search-box { display: flex; flex-direction: column; }
         .search-box label { font-weight: 600; margin-bottom: 5px; color: #34495e; font-size: 14px; }
         .search-box input { padding: 10px; border: 1px solid #bdc3c7; border-radius: 5px; font-size: 15px; }
         #statusMessage { font-weight: bold; text-align: center; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
-        
-        /* रिसेट बटन की डिज़ाइन */
         .reset-btn-container { text-align: center; margin-bottom: 20px; }
         .reset-btn { padding: 10px 25px; background-color: #e74c3c; color: white; border: none; border-radius: 5px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .reset-btn:hover { background-color: #c0392b; }
-
         .table-container { overflow-x: auto; max-height: 550px; border-radius: 5px; border: 1px solid #ecf0f1; }
-        table { width: 100%; border-collapse: collapse; white-space: nowrap; }
-        th, td { padding: 10px 15px; border: 1px solid #ecf0f1; text-align: left; }
-        th { background-color: #2c3e50; color: white; position: sticky; top: 0; z-index: 1; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-
-        /* पेजिनेशन (Next/Prev) बटन की डिज़ाइन */
+        .search-table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+        .search-table th, .search-table td { padding: 10px 15px; border: 1px solid #ecf0f1; text-align: left; }
+        .search-table th { background-color: #2c3e50; color: white; position: sticky; top: 0; z-index: 1; }
+        .search-table tr:nth-child(even) { background-color: #f9f9f9; }
+        .bill-btn { background-color: #27ae60; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .bill-btn:hover { background-color: #219150; }
         .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; }
         .pagination button { padding: 10px 20px; background-color: #2980b9; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.3s; }
         .pagination button:hover:not(:disabled) { background-color: #1abc9c; }
         .pagination button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
-        .pagination span { font-weight: bold; color: #2c3e50; font-size: 16px; }
+        
+        /* कैलकुलेटर की डिज़ाइन */
+        .input-group { display: flex; justify-content: space-between; margin-bottom: 15px; flex-wrap: wrap; gap: 15px; }
+        .input-box-calc { display: flex; flex-direction: column; flex: 1; min-width: 200px; }
+        label.input-label { font-weight: bold; margin-bottom: 5px; color: #555; }
+        .input-box-calc input { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
+        .checkbox-group { display: flex; align-items: center; background-color: #fff3cd; padding: 12px; border-radius: 4px; border: 1px solid #ffeeba; margin-bottom: 20px; cursor: pointer; transition: background 0.3s; }
+        .checkbox-group:hover { background-color: #ffe8a1; }
+        .checkbox-group input { width: 20px; height: 20px; margin-right: 10px; cursor: pointer; }
+        .checkbox-group span { color: #856404; margin-bottom: 0; cursor: pointer; font-size: 16px; font-weight: bold; }
+        .btn-group { display: flex; gap: 10px; }
+        .calc-btn { flex: 1; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; transition: background 0.3s; font-weight: bold; }
+        .calc-btn:hover { background-color: #0056b3; }
+        .btn-print { background-color: #28a745; }
+        .btn-print:hover { background-color: #218838; }
+        .btn-back { background-color: #6c757d; width: auto; padding: 10px 20px; border-radius: 4px; color: white; border: none; font-weight: bold; cursor: pointer; margin-bottom: 15px; }
+        .btn-back:hover { background-color: #5a6268; }
+        
+        .calc-table { width: 100%; border-collapse: collapse; margin-top: 20px; text-align: center; }
+        .calc-table th, .calc-table td { border: 1px solid #ddd; padding: 12px; }
+        .calc-table th { background-color: #e9ecef; color: #333; }
+        .summary-section { margin-top: 20px; width: 100%; border-collapse: collapse; font-weight: bold; font-size: 14px; }
+        .summary-section td { padding: 10px 15px; border: 1px solid #000; }
+        .bg-bill { background-color: #a8e6cf; }
+        .bg-penalty { background-color: #ff8b94; color: white; }
+        .bg-discount { background-color: #d4edda; color: #155724; } 
+        .bg-advance { background-color: #4facfe; color: white; }
+        .bg-total { background-color: #e0e0e0; }
+        .text-right { text-align: right; }
+        .penalty-waived-full { background-color: #d6d6d6 !important; color: #555 !important; }
+        .penalty-waived-partial { background-color: #ffb3ba !important; color: #333 !important; }
+        
+        .remark-box { margin-top: 25px; padding: 15px 20px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-left: 6px solid #28a745; border-radius: 6px; font-size: 16px; color: #2c3e50; box-shadow: 0 2px 6px rgba(0,0,0,0.08); line-height: 1.6; }
+        .highlight-amount { font-size: 18px; font-weight: bold; color: #d9534f; }
+        .highlight-discount { font-size: 18px; font-weight: bold; color: #28a745; }
+        .consumer-display-box { display: flex; justify-content: space-between; background-color: #fff; border: 2px solid #333; padding: 10px 15px; margin-bottom: 20px; border-radius: 4px; font-weight: bold; font-size: 16px; }
+
+        @media print { 
+            body { background-color: #fff; padding: 0; } 
+            .container, .calc-container { box-shadow: none; padding: 0; max-width: 100%; margin: 0;} 
+            .no-print { display: none !important; } 
+            #searchApp { display: none !important; } /* प्रिंट करते समय सर्च न दिखे */
+        }
     </style>
 </head>
 <body>
@@ -52,9 +93,9 @@
         <p id="loginError">❌ गलत पिन, कृपया दोबारा प्रयास करें!</p>
     </div>
 
-    <div id="mainApp" style="display: none;">
+    <div id="searchApp" style="display: none;">
         <div class="container">
-            <h2>नगर पालिका - सुरक्षित जल उपभोक्ता सर्च</h2>
+            <h2 style="border-bottom: 2px solid #2980b9; padding-bottom: 10px;">नगर पालिका - सुरक्षित जल उपभोक्ता सर्च</h2>
             
             <div id="statusMessage" style="background-color: #fcf3cf; color: #b9770e;">डेटा लोड किया जा रहा है, कृपया प्रतीक्षा करें...</div>
 
@@ -86,7 +127,7 @@
             </div>
 
             <div class="table-container">
-                <table id="dataTable">
+                <table class="search-table" id="dataTable">
                     <thead><tr id="tableHeader"></tr></thead>
                     <tbody id="tableBody"></tbody>
                 </table>
@@ -94,19 +135,114 @@
 
             <div class="pagination" id="paginationControls" style="display: none;">
                 <button id="prevBtn" onclick="prevPage()">⬅ पिछला पेज</button>
-                <span id="pageInfo">पेज 1</span>
+                <span id="pageInfo" style="font-weight: bold; color: #2c3e50; font-size: 16px;">पेज 1</span>
                 <button id="nextBtn" onclick="nextPage()">अगला पेज ➡</button>
             </div>
         </div>
     </div>
 
+    <div id="calculatorApp" style="display: none;">
+        <div class="calc-container">
+            <button class="btn-back no-print" onclick="goBackToSearch()">⬅ वापस सर्च पर जाएँ</button>
+            
+            <h2>वाटर बिल (नगर पालिका परिषद)</h2>
+            
+            <div class="input-group no-print">
+                <div class="input-box-calc">
+                    <label class="input-label" for="consumerName">उपभोक्ता का नाम:</label>
+                    <input type="text" id="consumerName" placeholder="नाम दर्ज करें">
+                </div>
+                <div class="input-box-calc">
+                    <label class="input-label" for="wardNo">वार्ड नंबर:</label>
+                    <input type="text" id="wardNo" placeholder="वार्ड क्र.">
+                </div>
+                <div class="input-box-calc">
+                    <label class="input-label" for="connectionNo">कनेक्शन नंबर:</label>
+                    <input type="text" id="connectionNo" placeholder="कनेक्शन क्र.">
+                </div>
+            </div>
+
+            <div class="input-group no-print">
+                <div class="input-box-calc">
+                    <label class="input-label" for="startDate">बिल प्रारंभ तिथि (Start Date):</label>
+                    <input type="date" id="startDate" value="2011-01-01">
+                </div>
+                <div class="input-box-calc">
+                    <label class="input-label" for="endDate">बिल समाप्ति तिथि (End Date):</label>
+                    <input type="date" id="endDate">
+                </div>
+                <div class="input-box-calc">
+                    <label class="input-label" for="advancePayment">अग्रिम भुगतान (Advance Payment ₹):</label>
+                    <input type="number" id="advancePayment" value="300" min="0" step="150">
+                </div>
+            </div>
+
+            <label class="checkbox-group no-print" for="lokAdalat">
+                <input type="checkbox" id="lokAdalat" onchange="calculateBill()">
+                <span>लोक अदालत स्लैब नियम लागू करें (चालू वर्ष की पेनल्टी छोड़कर)</span>
+            </label>
+
+            <div class="btn-group no-print">
+                <button class="calc-btn" onclick="calculateBill()">बिल कैलकुलेट करें</button>
+                <button class="calc-btn btn-print" onclick="window.print()">🖨️ प्रिंट बिल</button>
+            </div>
+
+            <div id="printConsumerDetails" class="consumer-display-box" style="display: none;">
+                <div><span>नाम: </span><span id="dispName" style="color:#007bff;">-</span></div>
+                <div><span>वार्ड क्र.: </span><span id="dispWard" style="color:#007bff;">-</span></div>
+                <div><span>कनेक्शन क्र.: </span><span id="dispConn" style="color:#007bff;">-</span></div>
+            </div>
+
+            <table class="calc-table">
+                <thead>
+                    <tr>
+                        <th>Rate (₹)</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Months Calculated</th>
+                        <th>Amount (₹)</th>
+                    </tr>
+                </thead>
+                <tbody id="slabsBody">
+                </tbody>
+            </table>
+
+            <table class="summary-section">
+                <tr>
+                    <td colspan="4" class="text-right bg-bill">Bill Amount (Arrears + Current Year)</td>
+                    <td width="20%" id="totalBillAmount" class="bg-bill text-center">0.00</td>
+                </tr>
+                <tr>
+                    <td colspan="4" id="penaltyLabel" class="text-right bg-penalty">Penalty 10%</td>
+                    <td id="penaltyAmount" class="bg-penalty text-center">0.00</td>
+                </tr>
+                <tr id="discountRow" style="display: none;">
+                    <td colspan="4" class="text-right bg-discount">Lok Adalat Discount (छूट)</td>
+                    <td id="discountAmount" class="bg-discount text-center">0.00</td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="text-right bg-advance">Advance Payment</td>
+                    <td id="advPaymentDisplay" class="bg-advance text-center">0.00</td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="text-right bg-total">Total Charge</td>
+                    <td id="finalCharge" class="bg-total text-center">0.00</td>
+                </tr>
+            </table>
+
+            <div id="remarkBox" class="remark-box" style="display: none;"></div>
+        </div>
+    </div>
+
     <script>
+        // ==========================================
+        // सर्च ऐप की स्क्रिप्ट (Search App Scripts)
+        // ==========================================
         const APP_PASSWORD = "nagar"; 
         const sheetURL = "https://script.google.com/macros/s/AKfycbzHh-PCNhDVsTZpVPgBTrK9LkNyXK3aP5XiW_jSkmQiMbSuJWKjHoGEehFXuL0EfZVjQQ/exec"; 
         
         let globalData = [];
         let headers = [];
-        
         let currentFilteredData = [];
         let currentPage = 1;
         const rowsPerPage = 200; 
@@ -115,7 +251,7 @@
             const enteredPass = document.getElementById('passInput').value;
             if (enteredPass === APP_PASSWORD) {
                 document.getElementById('loginScreen').style.display = "none";
-                document.getElementById('mainApp').style.display = "block";
+                document.getElementById('searchApp').style.display = "block";
                 loadDataFromGoogle();
             } else {
                 document.getElementById('loginError').style.display = "block";
@@ -131,11 +267,9 @@
                 .then(response => response.json())
                 .then(data => {
                     if (!data || data.length === 0) return;
-                    
                     headers = data[0];
                     globalData = data.slice(1);
                     currentFilteredData = globalData; 
-
                     renderHeaders();
                     displayTablePage();
                     
@@ -159,6 +293,9 @@
                 th.innerText = header;
                 headerRow.appendChild(th);
             });
+            const actionTh = document.createElement('th');
+            actionTh.innerText = "एक्शन (बिल बनाएं)";
+            headerRow.appendChild(actionTh);
         }
 
         function renderTable(data) {
@@ -171,6 +308,19 @@
                     td.innerText = row[i] !== undefined ? row[i] : ''; 
                     tr.appendChild(td);
                 }
+                
+                // बिल बनाने का बटन
+                const actionTd = document.createElement('td');
+                const btn = document.createElement('button');
+                btn.className = 'bill-btn';
+                btn.innerText = "🧾 बिल बनाएं";
+                
+                btn.onclick = function() {
+                    openCalculator(row[2] || '', row[0] || ''); 
+                };
+                
+                actionTd.appendChild(btn);
+                tr.appendChild(actionTd);
                 tbody.appendChild(tr);
             });
         }
@@ -178,7 +328,6 @@
         function displayTablePage() {
             const start = (currentPage - 1) * rowsPerPage;
             const end = start + rowsPerPage;
-            
             const pageData = currentFilteredData.slice(start, end);
             renderTable(pageData);
 
@@ -227,22 +376,261 @@
             displayTablePage();
         }
 
-        // --- नया फ़ंक्शन: सर्च को रिसेट करने के लिए ---
         function resetSearch() {
-            // सभी इनपुट बॉक्स खाली करें
             document.getElementById('sWaterId').value = '';
             document.getElementById('sOldWaterId').value = '';
             document.getElementById('sName').value = '';
             document.getElementById('sFather').value = '';
             document.getElementById('sAddress').value = '';
-            
-            // डेटा को वापस पहले जैसा करें
             filterData();
         }
 
         ['sWaterId', 'sOldWaterId', 'sName', 'sFather', 'sAddress'].forEach(id => {
             document.getElementById(id).addEventListener('input', filterData);
         });
+
+        // ==========================================
+        // दोनों को जोड़ने वाले फंक्शन (Bridge Functions)
+        // ==========================================
+        function openCalculator(cName, cConn) {
+            // सर्च स्क्रीन छिपाएं और कैलकुलेटर दिखाएं
+            document.getElementById('searchApp').style.display = 'none';
+            document.getElementById('calculatorApp').style.display = 'block';
+            
+            // डेटा भरें
+            document.getElementById('consumerName').value = cName;
+            document.getElementById('connectionNo').value = cConn;
+            document.getElementById('wardNo').value = ''; // वार्ड खाली करें
+            
+            // तुरंत बिल कैलकुलेट करें
+            calculateBill();
+            
+            // पेज के टॉप पर स्क्रॉल करें
+            window.scrollTo(0, 0);
+        }
+
+        function goBackToSearch() {
+            // कैलकुलेटर छिपाएं और सर्च वापस दिखाएं
+            document.getElementById('calculatorApp').style.display = 'none';
+            document.getElementById('searchApp').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        // ==========================================
+        // कैलकुलेटर ऐप की स्क्रिप्ट (Calculator Scripts)
+        // ==========================================
+        const rateSlabs = [
+            { rate: 9.25, start: new Date('1980-01-01'), end: new Date('1996-03-31') },
+            { rate: 40,   start: new Date('1996-04-01'), end: new Date('2011-03-31') },
+            { rate: 80,   start: new Date('2011-04-01'), end: new Date('2016-06-30') },
+            { rate: 100,  start: new Date('2016-07-01'), end: new Date('2025-03-31') },
+            { rate: 150,  start: new Date('2025-04-01'), end: new Date('2050-12-31') } 
+        ];
+
+        function formatDate(date) {
+            const d = String(date.getDate()).padStart(2, '0');
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const y = date.getFullYear();
+            return `${d}/${m}/${y}`;
+        }
+
+        function getOverlapMonths(slabStart, slabEnd, userStart, userEnd) {
+            const overlapStart = new Date(Math.max(slabStart, userStart));
+            const overlapEnd = new Date(Math.min(slabEnd, userEnd));
+            if (overlapStart > overlapEnd) return 0; 
+            let months = (overlapEnd.getFullYear() - overlapStart.getFullYear()) * 12;
+            months -= overlapStart.getMonth();
+            months += overlapEnd.getMonth();
+            return months + 1; 
+        }
+
+        function calculateAmountForDateRange(reqStart, reqEnd) {
+            if (reqStart > reqEnd) return 0;
+            let amt = 0;
+            rateSlabs.forEach(slab => {
+                const m = getOverlapMonths(slab.start, slab.end, reqStart, reqEnd);
+                if (m > 0) amt += m * slab.rate;
+            });
+            return amt;
+        }
+
+        function calculateBill() {
+            const cName = document.getElementById('consumerName').value.trim();
+            const cWard = document.getElementById('wardNo').value.trim();
+            const cConn = document.getElementById('connectionNo').value.trim();
+            const printConsumerDetails = document.getElementById('printConsumerDetails');
+
+            if (cName || cWard || cConn) {
+                printConsumerDetails.style.display = 'flex';
+                document.getElementById('dispName').innerText = cName || '-';
+                document.getElementById('dispWard').innerText = cWard || '-';
+                document.getElementById('dispConn').innerText = cConn || '-';
+            } else {
+                printConsumerDetails.style.display = 'none';
+            }
+
+            const userStartInput = document.getElementById('startDate').value;
+            const userEndInput = document.getElementById('endDate').value;
+            const advancePayment = parseFloat(document.getElementById('advancePayment').value) || 0;
+            const isLokAdalat = document.getElementById('lokAdalat').checked;
+
+            if (!userStartInput || !userEndInput) return;
+
+            if (advancePayment > 0 && advancePayment % 150 !== 0) {
+                alert("कृपया ध्यान दें: अग्रिम भुगतान (Advance Payment) केवल 150 के गुणांक (जैसे 150, 300, 450, 600...) में ही दर्ज करें।");
+                return; 
+            }
+
+            const userStart = new Date(userStartInput);
+            const userEnd = new Date(userEndInput);
+            
+            if (userStart > userEnd) {
+                alert("प्रारंभ तिथि समाप्ति तिथि से पहले की होनी चाहिए!");
+                return;
+            }
+
+            const tbody = document.getElementById('slabsBody');
+            tbody.innerHTML = ''; 
+
+            let totalBill = 0;
+            let lastMonthRate = 0;
+
+            rateSlabs.forEach(slab => {
+                const months = getOverlapMonths(slab.start, slab.end, userStart, userEnd);
+                let amount = 0;
+                if (months > 0) {
+                    amount = months * slab.rate;
+                    totalBill += amount;
+                }
+                if (userEnd >= slab.start && userEnd <= slab.end) {
+                    lastMonthRate = slab.rate;
+                }
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${slab.rate}</td>
+                    <td>${formatDate(slab.start)}</td>
+                    <td>${formatDate(slab.end)}</td>
+                    <td>${months > 0 ? months : 0}</td>
+                    <td>${amount}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); 
+
+            const currentYear = today.getFullYear();
+            const currentMonth = today.getMonth(); 
+            
+            const currentFyStartYear = currentMonth >= 3 ? currentYear : currentYear - 1;
+            const currentFyStart = new Date(currentFyStartYear, 3, 1); 
+            const endOfArrears = new Date(currentFyStartYear, 2, 31); 
+
+            let arrearsBill = calculateAmountForDateRange(userStart, new Date(Math.min(userEnd, endOfArrears)));
+            let currentFyBill = calculateAmountForDateRange(new Date(Math.max(userStart, currentFyStart)), userEnd);
+
+            let penaltyableArrears = arrearsBill;
+            let penaltyableCurrentFy = currentFyBill;
+            
+            const graceDueDate = new Date(userEnd.getFullYear(), userEnd.getMonth() + 1, 15);
+            graceDueDate.setHours(0, 0, 0, 0);
+            const isGracePeriod = today <= graceDueDate;
+
+            if (isGracePeriod) {
+                if (currentFyBill >= lastMonthRate && totalBill > 0) {
+                    penaltyableCurrentFy -= lastMonthRate;
+                } else if (arrearsBill >= lastMonthRate && totalBill > 0) {
+                    penaltyableArrears -= lastMonthRate;
+                }
+            }
+
+            let standardArrearsPenalty = penaltyableArrears * 0.10;
+            let currentFyPenalty = penaltyableCurrentFy * 0.10; 
+            let finalArrearsPenalty = standardArrearsPenalty;
+            let discountAmt = 0; 
+
+            const penaltyLabel = document.getElementById('penaltyLabel');
+            const penaltyAmountCell = document.getElementById('penaltyAmount');
+            const discountRow = document.getElementById('discountRow'); 
+            const discountAmountCell = document.getElementById('discountAmount');
+            
+            let baseLabelText = "Penalty 10%";
+            if (isGracePeriod) {
+                baseLabelText += ` (Grace till ${formatDate(graceDueDate)})`; 
+            } else {
+                baseLabelText += " (After Due Date)";
+            }
+
+            if (isLokAdalat) {
+                if (totalBill <= 10000) {
+                    finalArrearsPenalty = 0; 
+                    discountAmt = standardArrearsPenalty; 
+                    penaltyLabel.innerText = baseLabelText + " - Arrears 100% Waived";
+                    penaltyLabel.className = "text-right penalty-waived-full";
+                    penaltyAmountCell.className = "text-center penalty-waived-full";
+                } 
+                else if (totalBill > 10000 && totalBill <= 50000) {
+                    finalArrearsPenalty = standardArrearsPenalty * 0.25; 
+                    discountAmt = standardArrearsPenalty * 0.75; 
+                    penaltyLabel.innerText = baseLabelText + " - Arrears 75% Waived";
+                    penaltyLabel.className = "text-right penalty-waived-partial";
+                    penaltyAmountCell.className = "text-center penalty-waived-partial";
+                } 
+                else if (totalBill > 50000) {
+                    finalArrearsPenalty = standardArrearsPenalty * 0.50; 
+                    discountAmt = standardArrearsPenalty * 0.50; 
+                    penaltyLabel.innerText = baseLabelText + " - Arrears 50% Waived";
+                    penaltyLabel.className = "text-right penalty-waived-partial";
+                    penaltyAmountCell.className = "text-center penalty-waived-partial";
+                }
+            } else {
+                finalArrearsPenalty = standardArrearsPenalty;
+                discountAmt = 0; 
+                penaltyLabel.innerText = baseLabelText;
+                penaltyLabel.className = "text-right bg-penalty";
+                penaltyAmountCell.className = "text-center bg-penalty";
+            }
+
+            if (discountAmt > 0) {
+                discountRow.style.display = ''; 
+                discountAmountCell.innerText = "- " + discountAmt.toFixed(2);
+            } else {
+                discountRow.style.display = 'none'; 
+            }
+
+            const finalPenalty = finalArrearsPenalty + currentFyPenalty;
+            const totalCharge = totalBill + finalPenalty + advancePayment; 
+
+            document.getElementById('totalBillAmount').innerText = totalBill.toFixed(2);
+            document.getElementById('penaltyAmount').innerText = finalPenalty.toFixed(2);
+            document.getElementById('advPaymentDisplay').innerText = advancePayment.toFixed(2);
+            document.getElementById('finalCharge').innerText = totalCharge.toFixed(2);
+
+            const remarkBox = document.getElementById('remarkBox');
+            if (totalCharge > 0 || totalBill > 0) {
+                remarkBox.style.display = 'block';
+                let remarkHtml = `<strong>📌 रिमार्क:</strong> दिनांक <strong>${formatDate(userStart)}</strong> से <strong>${formatDate(userEnd)}</strong> तक की कुल देय राशि <span class="highlight-amount">₹${totalCharge.toFixed(2)}</span> है।`;
+                if (discountAmt > 0) {
+                    remarkHtml += `<br><span style="color: #155724;">🎉 <em>(लोक अदालत के अंतर्गत <span class="highlight-discount">₹${discountAmt.toFixed(2)}</span> की पेनल्टी छूट दी गई है।)</em></span>`;
+                }
+                remarkBox.innerHTML = remarkHtml;
+            } else {
+                remarkBox.style.display = 'none';
+            }
+        }
+
+        // पेज लोड होते ही डिफ़ॉल्ट एंड डेट सेट करना
+        window.onload = function() {
+            const today = new Date();
+            const lastDayOfPrevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+            
+            const yyyy = lastDayOfPrevMonth.getFullYear();
+            const mm = String(lastDayOfPrevMonth.getMonth() + 1).padStart(2, '0');
+            const dd = String(lastDayOfPrevMonth.getDate()).padStart(2, '0');
+            
+            document.getElementById('endDate').value = `${yyyy}-${mm}-${dd}`;
+        };
     </script>
+
 </body>
 </html>
